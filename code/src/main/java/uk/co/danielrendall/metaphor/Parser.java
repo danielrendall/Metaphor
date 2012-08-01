@@ -1,5 +1,8 @@
 package uk.co.danielrendall.metaphor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
@@ -11,6 +14,7 @@ import java.util.Map;
  * @author Daniel Rendall
  */
 public abstract class Parser<T extends Record> {
+    private static final Logger log = LoggerFactory.getLogger(Parser.class);
 
     private final static Charset ASCII = Charset.forName("ASCII");
 
@@ -20,6 +24,7 @@ public abstract class Parser<T extends Record> {
             if (first != getInitialByte()) {
                 throw new ParseException("First byte of record was " + first + " but expected " + getInitialByte());
             }
+            log.debug(this.getClass().getName() + " parsing record type " + first);
             return doParse(in);
         } catch (IOException e) {
             throw new ParseException("Unable to read stream", e);
