@@ -14,7 +14,15 @@ public class RULERParser extends Parser<RULER> {
 
     @Override
     protected RULER doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // I assume this is a byte
+        int numberOfTabStops = readByte(in);
+        RULER.TabStop[] tabStops = new RULER.TabStop[numberOfTabStops];
+        for (int i=0; i< numberOfTabStops; i++) {
+            int type = readByte(in);
+            int offset = readSimple16BitInteger(in);
+            tabStops[i] = new RULER.TabStop(type, offset);
+        }
+        return new RULER(tabStops);
     }
 
     @Override

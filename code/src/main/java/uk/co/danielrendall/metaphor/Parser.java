@@ -2,11 +2,13 @@ package uk.co.danielrendall.metaphor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.danielrendall.metaphor.records.END;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,15 +58,44 @@ public abstract class Parser<T extends Record> {
         }
     }
 
+    protected Record.Options readOptions(PushbackInputStream in) throws ParseException {
+        return new Record.Options(readByte(in));
+    }
+
+    protected Record.Nudge readNudge(PushbackInputStream in) throws ParseException {
+        int dx = readByte(in);
+        int dy = readByte(in);
+        // TODO - check
+        if (dx == 255 && dy == 255) {
+            dx = readTwoByteSignedInt(in);
+            dy = readTwoByteSignedInt(in);
+            return new Record.Nudge(dx, dy);
+        } else {
+            return new Record.Nudge(dx - 128, dy - 128);
+        }
+    }
+
+    protected int readTwoByteSignedInt(PushbackInputStream in) throws ParseException {
+        return readTwoByteUnsignedInt(in) - 32768;
+    }
+
+    protected int readTwoByteUnsignedInt(PushbackInputStream in) throws ParseException {
+        int low = readByte(in);
+        int high = readByte(in);
+        return (high << 8) + low;
+    }
+
     protected int readUnsignedInt(PushbackInputStream in) throws ParseException {
         int first = readByte(in);
         if (first < 255) {
             return first;
         } else {
-            int second = readByte(in);
-            int third = readByte(in);
-            return third << 8 + second;
+            return readTwoByteUnsignedInt(in);
         }
+    }
+
+    protected int readSimple16BitInteger(PushbackInputStream in) throws ParseException {
+        return readTwoByteUnsignedInt(in);
     }
 
     protected String getFromMap(PushbackInputStream in, Map<Integer, String> map) throws ParseException {
@@ -93,4 +124,16 @@ public abstract class Parser<T extends Record> {
             throw new ParseException("Couldn't check next type", e);
         }
     }
- }
+
+    protected void readRecordsToEnd(PushbackInputStream in, List<Record> records) throws ParseException {
+        while (true) {
+            int type = nextType(in);
+            Parser next = ParserRegistry.get(type);
+            Record record = next.parse(in);
+            if (record instanceof END) {
+                break;
+            }
+            records.add(record);
+        }
+    }
+}
