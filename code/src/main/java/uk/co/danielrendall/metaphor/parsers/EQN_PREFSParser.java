@@ -62,8 +62,20 @@ public class EQN_PREFSParser extends Parser<EQN_PREFS> {
             log.debug(value + " " + unit);
         }
 
+        int styleCount = readByte(in);
+        log.debug("Style count is " + styleCount);
+        EQN_PREFS.Style[] styles = new EQN_PREFS.Style[styleCount];
+        for (int j=0; j<styleCount; j++) {
+            int fontDefIndex = readUnsignedInt(in);
+            EQN_PREFS.Style style = EQN_PREFS.UNUSED;
+            if (fontDefIndex != 0) {
+                int charStyle = readByte(in);
+                style = new EQN_PREFS.Style(fontDefIndex, charStyle);
+            }
+            styles[j] = style;
+        }
 
-        return null;
+        return new EQN_PREFS(sizes, spacings, styles);
     }
 
     @Override
