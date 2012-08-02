@@ -14,7 +14,7 @@ public class SUBParser extends Parser<SUB> {
 
     @Override
     protected SUB doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return SUB.Instance;
     }
 
     @Override

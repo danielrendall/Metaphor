@@ -6,4 +6,7 @@ import uk.co.danielrendall.metaphor.Record;
  * @author Daniel Rendall
  */
 public class SYM extends Record {
+    public final static SYM Instance = new SYM();
+
+    private SYM(){}
 }

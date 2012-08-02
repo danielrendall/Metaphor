@@ -14,7 +14,7 @@ public class SYMParser extends Parser<SYM> {
 
     @Override
     protected SYM doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return SYM.Instance;
     }
 
     @Override

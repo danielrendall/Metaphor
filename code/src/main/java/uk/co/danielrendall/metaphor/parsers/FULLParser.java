@@ -14,7 +14,7 @@ public class FULLParser extends Parser<FULL> {
 
     @Override
     protected FULL doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return FULL.Instance;
     }
 
     @Override
