@@ -14,7 +14,7 @@ public class ENDParser extends Parser<END> {
 
     @Override
     protected END doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new END();
     }
 
     @Override
