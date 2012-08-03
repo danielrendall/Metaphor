@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.RecordVisitor;
 
 import java.util.List;
 import java.util.Map;
@@ -136,6 +137,11 @@ public class TMPL extends Record {
         this.variation = variation;
         this.templateOptions = templateOptions;
         this.records = ImmutableList.copyOf(records);
+    }
+
+    @Override
+    public void accept(RecordVisitor visitor) {
+        visitor.visit(this);
     }
 
     public Options getOptions() {

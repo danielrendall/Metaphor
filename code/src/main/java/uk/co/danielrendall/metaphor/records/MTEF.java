@@ -2,6 +2,7 @@ package uk.co.danielrendall.metaphor.records;
 
 import com.google.common.collect.ImmutableList;
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.RecordVisitor;
 
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class MTEF extends Record {
         this.applicationKey = applicationKey;
         this.equationOptions = equationOptions;
         this.records = ImmutableList.copyOf(records);
+    }
+
+    @Override
+    public void accept(RecordVisitor visitor) {
+        visitor.visit(this);
     }
 
     public String getGeneratingPlatform() {

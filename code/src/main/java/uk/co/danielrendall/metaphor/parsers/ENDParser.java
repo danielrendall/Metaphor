@@ -14,7 +14,7 @@ public class ENDParser extends Parser<END> {
 
     @Override
     protected END doParse(PushbackInputStream in) throws ParseException {
-        return new END();
+        return END.Instance;
     }
 
     @Override

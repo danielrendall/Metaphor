@@ -1,6 +1,7 @@
 package uk.co.danielrendall.metaphor.records;
 
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.RecordVisitor;
 
 /**
  * @author Daniel Rendall
@@ -12,6 +13,11 @@ public class FONT_DEF extends Record {
     public FONT_DEF(int encDefIndex, String fontName) {
         this.encDefIndex = encDefIndex;
         this.fontName = fontName;
+    }
+
+    @Override
+    public void accept(RecordVisitor visitor) {
+        visitor.visit(this);
     }
 
     public int getEncDefIndex() {

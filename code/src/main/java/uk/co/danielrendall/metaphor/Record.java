@@ -8,6 +8,8 @@ public abstract class Record {
 
     public final static Nudge NO_NUDGE = new Nudge(0,0);
 
+    public abstract void accept(RecordVisitor visitor);
+
     /**
      * @author Daniel Rendall
      */

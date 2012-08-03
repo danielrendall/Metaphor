@@ -3,6 +3,7 @@ package uk.co.danielrendall.metaphor.records;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.RecordVisitor;
 
 import java.util.List;
 
@@ -17,6 +18,11 @@ public class RULER extends Record {
 
     public RULER(TabStop[] tabStops) {
         this.tabStops = ImmutableList.copyOf(tabStops);
+    }
+
+    @Override
+    public void accept(RecordVisitor visitor) {
+        visitor.visit(this);
     }
 
     public static class TabStop {

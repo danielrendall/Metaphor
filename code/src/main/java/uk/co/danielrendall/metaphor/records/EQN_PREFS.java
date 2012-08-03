@@ -2,6 +2,7 @@ package uk.co.danielrendall.metaphor.records;
 
 import com.google.common.collect.ImmutableList;
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.RecordVisitor;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class EQN_PREFS extends Record {
         this.sizes = ImmutableList.copyOf(sizes);
         this.spacings = ImmutableList.copyOf(spacings);
         this.styles = ImmutableList.copyOf(styles);
+    }
+
+    @Override
+    public void accept(RecordVisitor visitor) {
+        visitor.visit(this);
     }
 
     public List<Dimension> getSizes() {
