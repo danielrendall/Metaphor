@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class ParserRegistry {
 
-    static final Map<Integer, Parser> parsers;
+    private static final Map<Integer, Parser> parsers;
     public static final int MTEF = 5;
 
     public static final int END = 0;
