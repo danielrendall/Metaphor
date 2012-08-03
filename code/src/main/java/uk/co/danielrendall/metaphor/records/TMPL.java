@@ -1,13 +1,18 @@
 package uk.co.danielrendall.metaphor.records;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Record;
+
+import java.util.Map;
 
 /**
  * @author Daniel Rendall
  */
 public class TMPL extends Record {
 
-
+    private static final Map<Integer, Template> templates;
 
     public static final int ANGLE = 0;
     public static final int PAREN = 1;
@@ -48,6 +53,56 @@ public class TMPL extends Record {
     public static final int STRIKE = 36;
     public static final int BOX = 37;
 
+    static {
+        Map<Integer, Template> _templates = Maps.newHashMap();
+        _templates.put(ANGLE, new Fence(ANGLE));
+        _templates.put(PAREN, new Fence(PAREN));
+        _templates.put(BRACE, new Fence(BRACE));
+        _templates.put(BRACK, new Fence(BRACK));
+        _templates.put(BAR, new Fence(BAR));
+        _templates.put(DBAR, new Fence(DBAR));
+        _templates.put(FLOOR, new Fence(FLOOR));
+        _templates.put(CEILING, new Fence(CEILING));
+        _templates.put(OBRACK, new Fence(OBRACK));
+        _templates.put(INTERVAL, new Interval(INTERVAL));
+        _templates.put(ROOT, new Radical(ROOT));
+        _templates.put(FRACT, new Fraction(FRACT));
+        _templates.put(UBAR, new OverAndUnderBar(UBAR));
+        _templates.put(OBAR, new OverAndUnderBar(OBAR));
+        _templates.put(ARROW, new Arrow(ARROW));
+        _templates.put(INTEG, new Integral(INTEG));
+        _templates.put(SUM, new SumProductUnionIntersection(SUM));
+        _templates.put(PROD, new SumProductUnionIntersection(PROD));
+        _templates.put(COPROD, new SumProductUnionIntersection(COPROD));
+        _templates.put(UNION, new SumProductUnionIntersection(UNION));
+        _templates.put(INTER, new SumProductUnionIntersection(INTER));
+        _templates.put(INTOP, new SumProductUnionIntersection(INTOP));
+        _templates.put(SUMOP, new SumProductUnionIntersection(SUMOP));
+        _templates.put(LIM, new Limit(LIM));
+        _templates.put(HBRACE, new HorizontalBraceBracket(HBRACE));
+        _templates.put(HBRACK, new HorizontalBraceBracket(HBRACK));
+        _templates.put(LDIV, new LongDivision(LDIV));
+        _templates.put(SUB, new SubscriptSuperscript(SUB));
+        _templates.put(SUP, new SubscriptSuperscript(SUP));
+        _templates.put(SUBSUP, new SubscriptSuperscript(SUBSUP));
+        _templates.put(DIRAC, new DiracBraket(DIRAC));
+        _templates.put(VEC, new Vector(VEC));
+        _templates.put(TILDE, new HatArcTildeJoint(TILDE));
+        _templates.put(HAT, new HatArcTildeJoint(HAT));
+        _templates.put(ARC, new HatArcTildeJoint(ARC));
+        _templates.put(JSTATUS, new HatArcTildeJoint(JSTATUS));
+        _templates.put(STRIKE, new Overstrike(STRIKE));
+        _templates.put(BOX, new Box(BOX));
+        templates = ImmutableMap.copyOf(_templates);
+    }
+    
+    public static Template get(int i) throws ParseException {
+        if (templates.containsKey(i)) {
+            return templates.get(i);
+        }
+        throw new ParseException("No template for type " + i);
+    }
+
     public enum TemplateClass {
         ParBox,
         RootBox,
@@ -71,6 +126,33 @@ public class TMPL extends Record {
     private final int variation;
     private final int templateOptions;
 
+    public TMPL(Options options, Nudge nudge, int template, int variation, int templateOptions) {
+        this.options = options;
+        this.nudge = nudge;
+        this.template = template;
+        this.variation = variation;
+        this.templateOptions = templateOptions;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public Nudge getNudge() {
+        return nudge;
+    }
+
+    public int getTemplate() {
+        return template;
+    }
+
+    public int getVariation() {
+        return variation;
+    }
+
+    public int getTemplateOptions() {
+        return templateOptions;
+    }
 
     public abstract static class Template {
         public abstract TemplateClass getTemplateClass();
@@ -157,10 +239,10 @@ public class TMPL extends Record {
         }
     }
 
-    public static class OverAndUnderBars extends Template {
+    public static class OverAndUnderBar extends Template {
         public static final int BAR_DOUBLE = 0x01;
 
-        public OverAndUnderBars(int type) {
+        public OverAndUnderBar(int type) {
             super(type);
         }
 
@@ -170,7 +252,7 @@ public class TMPL extends Record {
         }
     }
 
-    public static class Arrows extends Template {
+    public static class Arrow extends Template {
         public static final int AR_SINGLE = 0x00;
         public static final int AR_DOUBLE = 0x01;
         public static final int AR_HARPOON = 0x02;
@@ -181,7 +263,7 @@ public class TMPL extends Record {
         public static final int AR_LOS = 0x10;
         public static final int AR_SOL = 0x20;
 
-        public Arrows(int type) {
+        public Arrow(int type) {
             super(type);
         }
 
@@ -240,10 +322,10 @@ public class TMPL extends Record {
         }
     }
 
-    public static class HorizontalBracesBrackets extends Template {
+    public static class HorizontalBraceBracket extends Template {
         public static final int HB_TOP = 0x01;
 
-        public HorizontalBracesBrackets(int type) {
+        public HorizontalBraceBracket(int type) {
             super(type);
         }
 

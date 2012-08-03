@@ -18,12 +18,18 @@ public abstract class Record {
         public final static int CHAR_ENC_CHAR_8 = 0x04;
         public final static int CHAR_ENC_CHAR_16 = 0x10;
         public final static int CHAR_ENC_NO_MTCODE = 0x20;
+
         public final static int LINE_NULL = 0x01;
         public final static int LINE_LSPACE = 0x04;
         public final static int LP_RULER = 0x02;
+
         public final static int COLOR_CMYK = 0x01;
         public final static int COLOR_SPOT = 0x02;
         public final static int COLOR_NAME = 0x04;
+
+        public final static int BO_LOWER = 0x01;
+        public final static int BO_UPPER = 0x02;
+        public final static int BO_SUM = 0x40;
 
         private final int option;
 
