@@ -164,6 +164,10 @@ public class TMPL extends Record {
         return templateOptions;
     }
 
+    public List<Record> getRecords() {
+        return records;
+    }
+
     public abstract static class Template {
         public abstract TemplateClass getTemplateClass();
 
