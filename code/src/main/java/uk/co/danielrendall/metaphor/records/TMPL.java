@@ -1,10 +1,12 @@
 package uk.co.danielrendall.metaphor.records;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Record;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -122,16 +124,18 @@ public class TMPL extends Record {
 
     private final Options options;
     private final Nudge nudge;
-    private final int template;
+    private final Template template;
     private final int variation;
     private final int templateOptions;
+    private final List<Record> records;
 
-    public TMPL(Options options, Nudge nudge, int template, int variation, int templateOptions) {
+    public TMPL(Options options, Nudge nudge, Template template, int variation, int templateOptions, List<Record> records) {
         this.options = options;
         this.nudge = nudge;
         this.template = template;
         this.variation = variation;
         this.templateOptions = templateOptions;
+        this.records = ImmutableList.copyOf(records);
     }
 
     public Options getOptions() {
@@ -142,7 +146,7 @@ public class TMPL extends Record {
         return nudge;
     }
 
-    public int getTemplate() {
+    public Template getTemplate() {
         return template;
     }
 
