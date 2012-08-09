@@ -29,6 +29,10 @@ public class TMPLParser extends Parser<TMPL> {
         int templateOptions = -1;
         if (template.hasOptions()) {
             templateOptions = readByte(in);
+        } else {
+            if (readByte(in) != 0) {
+                throw new ParseException("Expected options byte to be 0 for a template with no options");
+            }
         }
         List<Record> records = Lists.newArrayList();
         if (!options.line_null()) {

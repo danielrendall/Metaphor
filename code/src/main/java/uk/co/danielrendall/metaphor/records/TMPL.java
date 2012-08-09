@@ -3,6 +3,7 @@ package uk.co.danielrendall.metaphor.records;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import uk.co.danielrendall.metaphor.Nudgeable;
 import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Record;
 import uk.co.danielrendall.metaphor.RecordVisitor;
@@ -13,7 +14,7 @@ import java.util.Map;
 /**
  * @author Daniel Rendall
  */
-public class TMPL extends Record {
+public class TMPL extends Record implements Nudgeable {
 
     private static final Map<Integer, Template> templates;
 

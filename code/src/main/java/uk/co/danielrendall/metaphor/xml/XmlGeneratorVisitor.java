@@ -2,6 +2,7 @@ package uk.co.danielrendall.metaphor.xml;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
+import uk.co.danielrendall.metaphor.Nudgeable;
 import uk.co.danielrendall.metaphor.Record;
 import uk.co.danielrendall.metaphor.RecordVisitor;
 import uk.co.danielrendall.metaphor.records.*;
@@ -28,6 +29,7 @@ public class XmlGeneratorVisitor implements RecordVisitor {
     public void visit(CHAR aChar) {
         Element el = new Element("char");
         el.addAttribute(new Attribute("charCode", "" + aChar.getCharCode()));
+        addNudgeIfAvailable(el, aChar);
         current.peek().appendChild(el);
     }
 
@@ -48,6 +50,7 @@ public class XmlGeneratorVisitor implements RecordVisitor {
 
     public void visit(ENCODING_DEF anEncodingDef) {
         Element el = new Element("encodingDef");
+        el.addAttribute(new Attribute("encodingName", anEncodingDef.getEncodingName()));
         current.peek().appendChild(el);
     }
 
@@ -89,6 +92,8 @@ public class XmlGeneratorVisitor implements RecordVisitor {
 
     public void visit(FONT_DEF aFontDef) {
         Element el = new Element("fontDef");
+        el.addAttribute(new Attribute("encDefIndex", "" + aFontDef.getEncDefIndex()));
+        el.addAttribute(new Attribute("fontName", "" + aFontDef.getFontName()));
         current.peek().appendChild(el);
     }
 
@@ -178,5 +183,13 @@ public class XmlGeneratorVisitor implements RecordVisitor {
         }
         current.pop();
         current.peek().appendChild(el);
+    }
+
+    private void addNudgeIfAvailable(Element el, Nudgeable nudgeable) {
+        if (nudgeable.getOptions().nudge()) {
+            final Record.Nudge nudge = nudgeable.getNudge();
+            el.addAttribute(new Attribute("nudgeDx", "" + nudge.getDx()));
+            el.addAttribute(new Attribute("nudgeDy", "" + nudge.getDy()));
+        }
     }
 }

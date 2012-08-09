@@ -1,6 +1,7 @@
 package uk.co.danielrendall.metaphor.records;
 
 import com.google.common.collect.ImmutableList;
+import uk.co.danielrendall.metaphor.Nudgeable;
 import uk.co.danielrendall.metaphor.Record;
 import uk.co.danielrendall.metaphor.RecordVisitor;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * @author Daniel Rendall
  */
-public class CHAR extends Record {
+public class CHAR extends Record implements Nudgeable {
     private final Options options;
     private final Nudge nudge;
     private final int typeFace;

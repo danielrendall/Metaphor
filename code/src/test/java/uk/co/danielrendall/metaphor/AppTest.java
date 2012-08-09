@@ -1,6 +1,7 @@
 package uk.co.danielrendall.metaphor;
 
 
+import com.google.common.io.Files;
 import nu.xom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +9,10 @@ import uk.co.danielrendall.metaphor.records.MTEF;
 import org.junit.Test;
 import uk.co.danielrendall.metaphor.xml.XmlGeneratorVisitor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -28,6 +31,7 @@ public class AppTest {
         mtef.accept(visitor);
         Element root = visitor.getRoot();
         log.debug(root.toXML());
+        Files.write(root.toXML(), new File("output.xml"), Charset.forName("UTF-8"));
 
     }
 }
