@@ -1,7 +1,7 @@
 package uk.co.danielrendall.metaphor;
 
-
 import com.google.common.io.Files;
+
 import nu.xom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,5 +33,16 @@ public class AppTest {
         log.debug(root.toXML());
         Files.write(root.toXML(), new File("output.xml"), Charset.forName("UTF-8"));
 
+    }
+    
+    @Test
+    public void testParseFraction() throws ParseException, IOException {
+        InputStream is = AppTest.class.getResourceAsStream("/ole/fraction.bin");
+        MTEF mtef = App.parse(is);
+        assertEquals("Windows", mtef.getGeneratingPlatform());
+        XmlGeneratorVisitor visitor = new XmlGeneratorVisitor();
+        mtef.accept(visitor);
+        Element root = visitor.getRoot();
+        log.debug(root.toXML());
     }
 }

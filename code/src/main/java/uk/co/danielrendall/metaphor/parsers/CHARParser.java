@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * @author Daniel Rendall
+ * @author Thilo Planz
  */
 public class CHARParser extends Parser<CHAR> {
 
@@ -22,7 +23,7 @@ public class CHARParser extends Parser<CHAR> {
     protected CHAR doParse(PushbackInputStream in) throws ParseException {
         Record.Options options = readOptions(in);
         Record.Nudge nudge = options.nudge() ? readNudge(in) : Record.NO_NUDGE;
-        int typeFace = readTwoByteSignedInt(in);
+        int typeFace = readUnsignedInt(in);
         int charCode = -1;
         if (!options.char_enc_no_mtcode()) {
             charCode = readSimple16BitInteger(in);
