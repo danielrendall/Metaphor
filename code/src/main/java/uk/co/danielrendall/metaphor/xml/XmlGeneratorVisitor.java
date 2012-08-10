@@ -11,6 +11,7 @@ import java.util.Stack;
 
 /**
  * @author Daniel Rendall
+ * @author Thilo Planz
  */
 public class XmlGeneratorVisitor implements RecordVisitor {
 
@@ -28,7 +29,10 @@ public class XmlGeneratorVisitor implements RecordVisitor {
 
     public void visit(CHAR aChar) {
         Element el = new Element("char");
-        el.addAttribute(new Attribute("charCode", "" + aChar.getCharCode()));
+        if (aChar.getMTCode() != null)
+        	el.addAttribute(new Attribute("MTCode", "" + aChar.getMTCode()));
+        if (aChar.getFontPosition() != null)
+        	el.addAttribute(new Attribute("fontPosition", "" + aChar.getFontPosition()));
         addNudgeIfAvailable(el, aChar);
         current.peek().appendChild(el);
     }

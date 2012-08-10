@@ -9,20 +9,22 @@ import java.util.List;
 
 /**
  * @author Daniel Rendall
+ * @author Thilo Planz
  */
 public class CHAR extends Record implements Nudgeable {
     private final Options options;
     private final Nudge nudge;
     private final int typeFace;
-    private final int charCode;
+    private final Integer MTCode;
+    private final Integer fontPosition;
     private final List<Record> embellishments;
 
-    public CHAR(Options options, Nudge nudge, int typeFace, int charCode, List<Record> embellishments) {
-        //To change body of created methods use File | Settings | File Templates.
+    public CHAR(Options options, Nudge nudge, int typeFace, Integer MTCode, Integer fontPosition, List<Record> embellishments) {
         this.options = options;
         this.nudge = nudge;
         this.typeFace = typeFace;
-        this.charCode = charCode;
+        this.MTCode = MTCode;
+        this.fontPosition = fontPosition;
         this.embellishments = ImmutableList.copyOf(embellishments);
     }
 
@@ -42,10 +44,15 @@ public class CHAR extends Record implements Nudgeable {
     public int getTypeFace() {
         return typeFace;
     }
-
-    public int getCharCode() {
-        return charCode;
+    
+    public Integer getMTCode(){
+    	return MTCode;
     }
+    
+    public Integer getFontPosition(){
+    	return fontPosition;
+    }
+
 
     public List<Record> getEmbellishments() {
         return embellishments;
