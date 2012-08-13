@@ -14,7 +14,7 @@ public class FONT_STYLE_DEFParser extends Parser<FONT_STYLE_DEF> {
 
     @Override
     protected FONT_STYLE_DEF doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("Implement me!");  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

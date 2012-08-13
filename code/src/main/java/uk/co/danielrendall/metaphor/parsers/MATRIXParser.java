@@ -14,7 +14,7 @@ public class MATRIXParser extends Parser<MATRIX> {
 
     @Override
     protected MATRIX doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("Implement me!");  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
