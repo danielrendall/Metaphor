@@ -29,7 +29,28 @@ public class SIZEParser extends Parser<SIZE> {
 
     @Override
     protected SIZE doParse(PushbackInputStream in) throws ParseException {
-        throw new UnsupportedOperationException("Implement me!");  //To change body of implemented methods use File | Settings | File Templates.
+        int firstByte = readByte(in);
+        int lSize = 0;
+        int dSize = 0;
+        SIZE.SizeType sizeType;
+        switch (firstByte) {
+            case 101: // lsize < 0
+                // this is supposed to be -(point size) which makes me think that 16 bit integers should be signed...?
+                sizeType = SIZE.SizeType.ExplicitPointSize;
+                lSize = readSimple16BitInteger(in);
+                break;
+            case 100:
+                sizeType = SIZE.SizeType.LargeDelta;
+                lSize = readByte(in);
+                dSize = readSimple16BitInteger(in);
+                break;
+            default:
+                sizeType = SIZE.SizeType.SmallDelta;
+                lSize = firstByte;
+                dSize = readByte(in) - 128;
+                break;
+        }
+        return new SIZE(sizeType, lSize, dSize);
     }
 
     @Override
