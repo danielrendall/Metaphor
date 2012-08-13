@@ -40,6 +40,10 @@ public class RULER extends Record {
         visitor.visit(this);
     }
 
+    public List<TabStop> getTabStops() {
+        return tabStops;
+    }
+
     public static class TabStop {
         private final int type;
         private final int offset;
