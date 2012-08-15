@@ -23,10 +23,11 @@ import java.util.Map;
 
 /**
  * @author Daniel Rendall
+ * @author Thilo Planz
  */
 public class ParserRegistry {
 
-    private static final Map<Integer, Parser> parsers;
+    private static final Map<Integer, Parser<?>> parsers;
     public static final int MTEF = 5;
 
     public static final int END = 0;
@@ -51,7 +52,7 @@ public class ParserRegistry {
     public static final int ENCODING_DEF = 19;
 
     static {
-        Map<Integer, Parser> _parsers = Maps.newHashMap();
+        Map<Integer, Parser<?>> _parsers = Maps.newHashMap();
         _parsers.put(END, new ENDParser());
         _parsers.put(LINE, new LINEParser());
         _parsers.put(CHAR, new CHARParser());
@@ -75,7 +76,10 @@ public class ParserRegistry {
         parsers = ImmutableMap.copyOf(_parsers);
     }
 
-    public static Parser get(int i) throws ParseException {
+    public static Parser<?> get(int i) throws ParseException {
+    	// InputStreams will return -1 when we have reached the end
+    	if (i == -1)
+    		throw new ParseException("unexpected end of data");
         if (parsers.containsKey(i)) {
             return parsers.get(i);
         }
