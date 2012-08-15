@@ -83,6 +83,10 @@ public class ParserRegistry {
         if (parsers.containsKey(i)) {
             return parsers.get(i);
         }
+        // FUTURE: If the record type is 100 or greater, it represents a record that will be defined in a future version of MTEF.
+        if (i >= 100){
+        	return new FUTUREParser(i);
+        }
         throw new ParseException("No parser for type " + i);
     }
 

@@ -19,6 +19,7 @@ import uk.co.danielrendall.metaphor.records.*;
 
 /**
  * @author Daniel Rendall
+ * @author Thilo Planz
  */
 public interface RecordVisitor {
     public void visit(CHAR aChar);
@@ -42,4 +43,5 @@ public interface RecordVisitor {
     public void visit(SUBSYM aSubSym);
     public void visit(SYM aSym);
     public void visit(TMPL aTmpl);
+    public void visit(FUTURE aFuture);
 }

@@ -203,6 +203,13 @@ public class XmlGeneratorVisitor implements RecordVisitor {
         current.pop();
         current.peek().appendChild(el);
     }
+    
+    public void visit(FUTURE aFuture){
+    	Element el = new Element("future");
+    	el.addAttribute(new Attribute("recordType", String.valueOf(aFuture.getRecordType())));
+    	// TODO: Base64 encoding of the data
+    	current.peek().appendChild(el);
+    }
 
     private void addNudgeIfAvailable(Element el, Nudgeable nudgeable) {
         if (nudgeable.getOptions().nudge()) {
