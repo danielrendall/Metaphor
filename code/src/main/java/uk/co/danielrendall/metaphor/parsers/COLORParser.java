@@ -29,7 +29,8 @@ public class COLORParser extends Parser<COLOR> {
 
     @Override
     protected COLOR doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        int colorDefIndex = readUnsignedInt(in);
+        return new COLOR(colorDefIndex);
     }
 
     @Override

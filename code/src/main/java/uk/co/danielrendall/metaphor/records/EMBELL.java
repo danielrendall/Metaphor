@@ -22,8 +22,30 @@ import uk.co.danielrendall.metaphor.RecordVisitor;
  * @author Daniel Rendall
  */
 public class EMBELL extends Record {
+    private final Options options;
+    private final Nudge nudge;
+    private final int embell;
+
+    public EMBELL(Options options, Nudge nudge, int embell) {
+        this.options = options;
+        this.nudge = nudge;
+        this.embell = embell;
+    }
+
     @Override
     public void accept(RecordVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public Nudge getNudge() {
+        return nudge;
+    }
+
+    public int getEmbell() {
+        return embell;
     }
 }

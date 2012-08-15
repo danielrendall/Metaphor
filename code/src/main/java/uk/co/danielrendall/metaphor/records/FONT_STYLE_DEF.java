@@ -22,8 +22,24 @@ import uk.co.danielrendall.metaphor.RecordVisitor;
  * @author Daniel Rendall
  */
 public class FONT_STYLE_DEF extends Record {
+    private final int fontDefIndex;
+    private final int charStyle;
+
+    public FONT_STYLE_DEF(int fontDefIndex, int charStyle) {
+        this.fontDefIndex = fontDefIndex;
+        this.charStyle = charStyle;
+    }
+
     @Override
     public void accept(RecordVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public int getFontDefIndex() {
+        return fontDefIndex;
+    }
+
+    public int getCharStyle() {
+        return charStyle;
     }
 }

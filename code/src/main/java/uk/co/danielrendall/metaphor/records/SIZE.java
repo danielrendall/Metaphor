@@ -22,6 +22,36 @@ import uk.co.danielrendall.metaphor.RecordVisitor;
  * @author Daniel Rendall
  */
 public class SIZE extends Record {
+
+    public enum SizeType {
+        ExplicitPointSize,
+        SmallDelta,
+        LargeDelta
+    }
+
+    private final SizeType sizeType;
+    private final int lSize;
+    private final int dSize;
+
+    public SIZE(SizeType sizeType, int lSize, int dSize) {
+
+        this.sizeType = sizeType;
+        this.lSize = lSize;
+        this.dSize = dSize;
+    }
+
+    public SizeType getSizeType() {
+        return sizeType;
+    }
+
+    public int getlSize() {
+        return lSize;
+    }
+
+    public int getdSize() {
+        return dSize;
+    }
+
     @Override
     public void accept(RecordVisitor visitor) {
         visitor.visit(this);

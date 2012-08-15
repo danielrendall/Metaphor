@@ -18,6 +18,7 @@ package uk.co.danielrendall.metaphor.parsers;
 import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Parser;
 import uk.co.danielrendall.metaphor.ParserRegistry;
+import uk.co.danielrendall.metaphor.Record;
 import uk.co.danielrendall.metaphor.records.EMBELL;
 
 import java.io.PushbackInputStream;
@@ -29,7 +30,10 @@ public class EMBELLParser extends Parser<EMBELL> {
 
     @Override
     protected EMBELL doParse(PushbackInputStream in) throws ParseException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Record.Options options = readOptions(in);
+        Record.Nudge nudge = options.nudge() ? readNudge(in) : Record.NO_NUDGE;
+        int embell = readByte(in); // assuming this is a byte, the docs aren't clear
+        return new EMBELL(options, nudge, embell);
     }
 
     @Override
