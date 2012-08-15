@@ -22,6 +22,7 @@ import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Parser;
 import uk.co.danielrendall.metaphor.ParserRegistry;
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.records.END;
 import uk.co.danielrendall.metaphor.records.MTEF;
 
 import java.io.PushbackInputStream;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 /**
  * @author Daniel Rendall
+ * @author Thilo Planz
  */
 public class MTEFParser extends Parser<MTEF> {
 
@@ -57,10 +59,13 @@ public class MTEFParser extends Parser<MTEF> {
         String applicationKey = readNullTerminatedString(in);
         int equationOptions = readByte(in);
         List<Record> records = Lists.newArrayList();
-        int type;
-        while ((type = nextType(in)) != -1) {
-            Parser next = ParserRegistry.get(type);
-            records.add(next.parse(in));
+        while (true) {
+        	int type = nextType(in);
+        	Parser<?> next = ParserRegistry.get(type);
+            Record r = next.parse(in);
+            if (r instanceof END)
+            	break;
+        	records.add(r);
         }
 
         return new MTEF(generatingPlatform, generatingProduct, productVersion, productSubversion, applicationKey, equationOptions, records);
