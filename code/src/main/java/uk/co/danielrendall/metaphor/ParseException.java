@@ -20,7 +20,12 @@ package uk.co.danielrendall.metaphor;
  */
 public class ParseException extends Exception {
 
-    public ParseException() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6200400868919299030L;
+
+	public ParseException() {
     }
 
     public ParseException(String message) {

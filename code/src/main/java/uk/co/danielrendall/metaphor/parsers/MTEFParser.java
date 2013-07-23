@@ -59,7 +59,7 @@ public class MTEFParser extends Parser<MTEF> {
         List<Record> records = Lists.newArrayList();
         int type;
         while ((type = nextType(in)) != -1) {
-            Parser next = ParserRegistry.get(type);
+            Parser<?> next = ParserRegistry.get(type);
             records.add(next.parse(in));
         }
 

@@ -22,11 +22,13 @@ import uk.co.danielrendall.metaphor.Record;
 import uk.co.danielrendall.metaphor.RecordVisitor;
 import uk.co.danielrendall.metaphor.records.*;
 
+import java.util.List;
 import java.util.Stack;
 
 /**
  * @author Daniel Rendall
  * @author Thilo Planz
+ * @author Murugan Natarajan
  */
 public class XmlGeneratorVisitor implements RecordVisitor {
 
@@ -138,6 +140,19 @@ public class XmlGeneratorVisitor implements RecordVisitor {
 
     public void visit(MATRIX aMatrix) {
         Element el = new Element("matrix");
+        el.addAttribute(new Attribute("rows", aMatrix.getRows() + ""));
+        el.addAttribute(new Attribute("columns", aMatrix.getCols() + ""));
+        current.push(el);
+        for(List<Record> row : aMatrix.getRowList()) {
+        	Element rowEl = new Element("row");
+        	current.push(rowEl);
+        	for(Record record : row) {
+                record.accept(this);
+            }
+        	current.pop();
+            current.peek().appendChild(rowEl);
+        }
+        current.pop();
         current.peek().appendChild(el);
     }
 
