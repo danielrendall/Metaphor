@@ -22,12 +22,18 @@ import uk.co.danielrendall.metaphor.xml.XmlGeneratorVisitor;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -117,7 +123,7 @@ public class App{
     	return folderList;
     }
     
-    public void doWithFolder(File rootDir, File outPath, boolean generateOutPath)throws ParseException, IOException{
+    public void doWithFolder(File rootDir, File outPath, boolean generateOutPath)throws ParseException, IOException, TransformerException, URISyntaxException{
     	log.debug("Processing Folder \"" + rootDir.getName() + "\" ...");
     	List<File> currentFiles = getFiles(rootDir);
     	for(File currentFile: currentFiles){
@@ -133,13 +139,16 @@ public class App{
     	}
     }
     
-    public void doWithFile(File inFile, File outPath, boolean generateOutPath)throws ParseException, IOException{
+    public void doWithFile(File inFile, File outPath, boolean generateOutPath)throws ParseException, IOException, TransformerException, URISyntaxException{
     	log.debug("Processing File \"" + inFile.getPath() + "\" ...");
+    	File xmlOutPath = new File(outPath.getParentFile(), ((outPath.getName().contains("."))? outPath.getName().substring(0, outPath.getName().lastIndexOf(".")) : outPath.getName()) + ".xml");
+    	File mmlOutPath = new File(outPath.getParentFile(), ((outPath.getName().contains("."))? outPath.getName().substring(0, outPath.getName().lastIndexOf(".")) : outPath.getName()) + ".mml");
     	if(generateOutPath){
     		if(!outPath.exists()){
     			outPath.mkdirs();
     		}
-    		outPath = new File(outPath, inFile.getName().substring(0, inFile.getName().lastIndexOf(".")) + ".xml");
+    		xmlOutPath = new File(outPath, ((inFile.getName().contains("."))? inFile.getName().substring(0, inFile.getName().lastIndexOf(".")) : inFile.getName()) + ".xml");
+    		mmlOutPath = new File(outPath, ((inFile.getName().contains("."))? inFile.getName().substring(0, inFile.getName().lastIndexOf(".")) : inFile.getName()) + ".mml");
     	}
         InputStream is = new FileInputStream(inFile);
         MTEF mtef = this.parse(is);
@@ -147,10 +156,13 @@ public class App{
         mtef.accept(visitor);
         Element root = visitor.getRoot();
         log.debug(root.toXML());
-        Files.write(root.toXML(), outPath, Charset.forName("UTF-8"));
+        Files.write(root.toXML(), xmlOutPath, Charset.forName("UTF-8"));
+        TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
+        Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(new File(App.class.getResource("/xslt/math.xsl").toURI())));
+        transformer.transform(new javax.xml.transform.stream.StreamSource(xmlOutPath), new javax.xml.transform.stream.StreamResult( new FileOutputStream(mmlOutPath)));
     }
     
-    private void doWithArgs(String[] args) throws ParseException, IOException{
+    private void doWithArgs(String[] args) throws ParseException, IOException, TransformerException, URISyntaxException{
     	Options options = new Options();
     	HelpFormatter formatter = new HelpFormatter();
     	options.addOption("i", true, "MathType MTEF OLE binary file location.");
@@ -185,7 +197,7 @@ public class App{
     	}
     }
     
-    public static void main(String[] args)throws org.apache.commons.cli.ParseException, ParseException, IOException{
+    public static void main(String[] args)throws org.apache.commons.cli.ParseException, ParseException, IOException, TransformerException, URISyntaxException{
     	App obj = new App();
     	obj.doWithArgs(args);
     	System.out.println("Process Completed Successfully ...");
