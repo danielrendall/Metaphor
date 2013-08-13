@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -55,6 +56,14 @@ import com.google.common.io.Files;
  */
 public class App{
 	private static final Logger log = LoggerFactory.getLogger(App.class);
+	private Properties config = new Properties();
+	private Properties message = new Properties();
+	
+	public App() throws IOException{
+		this.config.load(App.class.getResourceAsStream("/config.properties"));
+		this.message.load(App.class.getResourceAsStream(this.config.getProperty("mathMl.conversion.message.path")));
+	}
+	
     public MTEF parse(InputStream is) throws ParseException, IOException {
     	byte[] bytes = new byte[is.available()];
     	is.read(bytes);
@@ -63,13 +72,13 @@ public class App{
         Integer[] startKeys = new Integer[]{28, 0, 0, 0, 2, 0}; // Header Starting 6 byte values
         int startIndex = identifyKeys(startKeys, bytes);
         if(startIndex == -1){
-        	throw new ParseException("Expected Header Start Value \"1c00 0000 0200\" Not Found with this file.");
+        	throw new ParseException(this.message.getProperty("mathType.ole.header.missing"));
         }
         bytes = Arrays.copyOfRange(bytes, startIndex, bytes.length);
         
        	// To throw away 28 bytes of MathType OLE Header
        	if(28 >= bytes.length){
-       		throw new ParseException("Expected Header Start Value \"1c00 0000 0200\" Found at the End of file.");
+       		throw new ParseException(this.message.getProperty("mathType.ole.header.missing"));
        	}
        	bytes = Arrays.copyOfRange(bytes, 28, bytes.length);
        	
@@ -124,7 +133,7 @@ public class App{
     }
     
     public void doWithFolder(File rootDir, File outPath, boolean generateOutPath)throws ParseException, IOException, TransformerException, URISyntaxException{
-    	log.debug("Processing Folder \"" + rootDir.getName() + "\" ...");
+    	log.debug(String.format(this.message.getProperty("mathMl.conversion.current.folder"), rootDir.getName()));
     	List<File> currentFiles = getFiles(rootDir);
     	for(File currentFile: currentFiles){
     		doWithFile(currentFile, outPath, generateOutPath);
@@ -140,7 +149,7 @@ public class App{
     }
     
     public void doWithFile(File inFile, File outPath, boolean generateOutPath)throws ParseException, IOException, TransformerException, URISyntaxException{
-    	log.debug("Processing File \"" + inFile.getPath() + "\" ...");
+    	log.debug(String.format(this.message.getProperty("mathMl.conversion.current.file"), inFile.getPath()));
     	File xmlOutPath = new File(outPath.getParentFile(), ((outPath.getName().contains("."))? outPath.getName().substring(0, outPath.getName().lastIndexOf(".")) : outPath.getName()) + ".xml");
     	File mmlOutPath = new File(outPath.getParentFile(), ((outPath.getName().contains("."))? outPath.getName().substring(0, outPath.getName().lastIndexOf(".")) : outPath.getName()) + ".mml");
     	if(generateOutPath){
@@ -158,36 +167,36 @@ public class App{
         log.debug(root.toXML());
         Files.write(root.toXML(), xmlOutPath, Charset.forName("UTF-8"));
         TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
-        Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(new File(App.class.getResource("/xslt/math.xsl").toURI())));
+        Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(new File(App.class.getResource(this.config.getProperty("mathMl.conversion.xslt.path")).toURI())));
         transformer.transform(new javax.xml.transform.stream.StreamSource(xmlOutPath), new javax.xml.transform.stream.StreamResult( new FileOutputStream(mmlOutPath)));
     }
     
     private void doWithArgs(String[] args) throws ParseException, IOException, TransformerException, URISyntaxException{
     	Options options = new Options();
     	HelpFormatter formatter = new HelpFormatter();
-    	options.addOption("i", true, "MathType MTEF OLE binary file location.");
-    	options.addOption("o", true, "XML Output File Name, By Default it will be placed in current location and it will be in same name as input file name with xml file extention.");
+    	options.addOption(this.message.getProperty("mathMl.commandLine.input.option"), true, this.message.getProperty("mathMl.commandLine.input.desc"));
+    	options.addOption(this.message.getProperty("mathMl.commandLine.output.option"), true, this.message.getProperty("mathMl.commandLine.output.desc"));
     	CommandLineParser parser = new PosixParser();
     	CommandLine cmd = null;
     	try {
     		cmd = parser.parse(options, args);
     	} catch (org.apache.commons.cli.ParseException e) {
-    		System.err.println("Invalid Command Line Arguments Given.");
+    		System.err.println(this.message.getProperty("mathMl.commandLine.invalid"));
     		e.printStackTrace();
      	}
-    	if (cmd == null || cmd != null && !cmd.hasOption("i")){
-    		formatter.printHelp("java -jar <JarFileName>.jar", options);
+    	if (cmd == null || cmd != null && !cmd.hasOption(this.message.getProperty("mathMl.commandLine.input.option"))){
+    		formatter.printHelp(this.message.getProperty("mathMl.commandLine.help.desc"), options);
     		System.exit(1);
      	}
-    	String inputPath = cmd.getOptionValue("i");
-    	String outputPath = "./";
-    	if (cmd.hasOption("o")){
-    		outputPath = cmd.getOptionValue("o");
+    	String inputPath = cmd.getOptionValue(this.message.getProperty("mathMl.commandLine.input.option"));
+    	String outputPath = this.config.getProperty("mathMl.commandLine.output.defaul");
+    	if (cmd.hasOption(this.message.getProperty("mathMl.commandLine.output.option"))){
+    		outputPath = cmd.getOptionValue(this.message.getProperty("mathMl.commandLine.output.option"));
   	   	}
     	File inputFile = new File(inputPath);
     	File outputFile = new File(outputPath);
     	if(!inputFile.exists()){
-    		System.err.println("Input directory or file location given not found.");
+    		System.err.println(this.message.getProperty("mathMl.commandLine.input.invalid"));
     		System.exit(1);
     	}
     	if(inputFile.getCanonicalFile().isFile()){
@@ -195,11 +204,11 @@ public class App{
     	}else{
     		doWithFolder(inputFile, outputFile, true);
     	}
+    	System.out.println(this.message.getProperty("mathMl.conversion.success"));
     }
     
     public static void main(String[] args)throws org.apache.commons.cli.ParseException, ParseException, IOException, TransformerException, URISyntaxException{
     	App obj = new App();
     	obj.doWithArgs(args);
-    	System.out.println("Process Completed Successfully ...");
     }
 }

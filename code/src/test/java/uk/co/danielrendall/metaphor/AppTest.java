@@ -29,23 +29,12 @@ import javax.xml.transform.TransformerException;
  * @author Murugan Natarajan
  */
 public class AppTest {
-    private App obj = new App();
+    private App obj = null;
+    
+    public AppTest() throws IOException{
+    	this.obj = new App();
+    }
 
-    @Test
-    public void testParseQuadratic() throws ParseException, IOException, URISyntaxException, TransformerException {
-    	obj.doWithFile(new File(AppTest.class.getResource("/ole/quadratic.bin").toURI()), new File("output/"), true);
-    }
-    
-    @Test
-    public void testParseFraction() throws ParseException, IOException, URISyntaxException, TransformerException {
-    	obj.doWithFile(new File(AppTest.class.getResource("/ole/fraction.bin").toURI()), new File("output/"), true);
-    }
-    
-    @Test
-    public void testParseMatrices() throws ParseException, IOException, URISyntaxException, TransformerException {
-    	obj.doWithFile(new File(AppTest.class.getResource("/ole/matrices.bin").toURI()), new File("output/"), true);
-    }
-    
     @Test
     public void testParsesWord2000() throws ParseException, IOException, URISyntaxException, TransformerException {
     	obj.doWithFolder(new File(AppTest.class.getResource("/ole/word2000/").toURI()), new File("output/word2000/"), true);
