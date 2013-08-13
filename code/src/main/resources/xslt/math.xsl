@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exsl="http://exslt.org/common"
-                xmlns:ce="http://www.elsevier.com/xml/common/dtd"
-                xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                xmlns:mml="http://www.w3.org/1998/Math/MathML"
-		xmlns:uc="http://www.elsevier.com/xml/apps/qc/uc"
-		xmlns:tb="http://www.elsevier.com/xml/common/table/dtd"
-		xmlns="http://www.w3.org/1999/xhtml"
-		exclude-result-prefixes="xsl exsl xlink tb ce sb mml uc"
                 version='2.0'>
 
 <xsl:template match="/">
