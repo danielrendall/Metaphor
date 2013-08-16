@@ -16,45 +16,18 @@
 </xsl:template>
 
 <xsl:template match="char">
-  <xsl:variable name="s" select="codepoints-to-string(@MTCode)" />
+  <xsl:variable name="char" select="codepoints-to-string(@MTCode)" />
   <xsl:choose>
-    <xsl:when test="matches($s,'^\p{N}+$')">
-      <mn><xsl:value-of select="$s" /></mn>
+    <xsl:when test="matches($char,'^\p{N}+$')">
+      <mn><xsl:value-of select="$char" /></mn>
     </xsl:when>
-    <xsl:when test="matches($s,'^\p{L}+$')">
-      <mi><xsl:value-of select="$s" /></mi>
+    <xsl:when test="matches($char,'^\p{L}+$')">
+      <mi><xsl:value-of select="$char" /></mi>
     </xsl:when>
     <xsl:otherwise>
-      <mo><xsl:value-of select="$s" /></mo>
+      <mo><xsl:value-of select="$char" /></mo>
     </xsl:otherwise>
   </xsl:choose>
-</xsl:template>
-
-<xsl:template match="tmpl[matches(@templateType,'^(2[7-9])$')]">
-  <msubsup>
-    <mrow/>
-    <xsl:apply-templates />
-  </msubsup>
-</xsl:template>
-
-<xsl:template match="tmpl[@templateType = '11']">
-  <mfrac>
-    <xsl:apply-templates />
-  </mfrac>
-</xsl:template>
-
-<xsl:template match="tmpl[@templateType = '23']">
-  <munderover>
-    <xsl:apply-templates />
-  </munderover>
-</xsl:template>
-
-<xsl:template match="tmpl[matches(@templateType,'^[1-3]$')]">
-  <xsl:variable name="open" select="codepoints-to-string(*[2]/@MTCode)" />
-  <xsl:variable name="close" select="codepoints-to-string(*[3]/@MTCode)" />
-  <mfenced open="{$open}" close="{$close}">
-    <xsl:apply-templates select="*[1]"/>
-  </mfenced>
 </xsl:template>
 
 <xsl:template match="matrix">
@@ -73,6 +46,214 @@
   <mtd>
     <xsl:apply-templates />
   </mtd>
+</xsl:template>
+
+<xsl:template match="tmpl[matches(@templateType,'^[0-9]$')]">
+  <xsl:variable name="open" select="codepoints-to-string(*[2]/@MTCode)" />
+  <xsl:variable name="close" select="codepoints-to-string(*[3]/@MTCode)" />
+  <mfenced open="{$open}" close="{$close}">
+    <xsl:apply-templates select="*[1]"/>
+  </mfenced>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '10']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '1'">
+      <mroot>
+        <xsl:apply-templates />
+      </mroot>
+    </xsl:when>
+    <xsl:otherwise>
+      <msqrt>
+        <xsl:apply-templates />
+      </msqrt>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '11']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '6'">
+      <mrow>
+        <xsl:apply-templates select="*[1]" />
+        <mo>/</mo>
+        <xsl:apply-templates select="*[2]" />
+      </mrow>
+    </xsl:when>
+    <xsl:when test="$vari = '2'">
+      <mfrac bevelled='true'>
+        <xsl:apply-templates />
+      </mfrac>
+    </xsl:when>
+    <xsl:otherwise>
+      <mfrac>
+        <xsl:apply-templates />
+      </mfrac>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '12']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '1'">
+      <munder>
+        <munder>
+          <xsl:apply-templates />
+          <mo stretchy='true'>&#x00AF;</mo>
+        </munder>
+        <mo stretchy='true'>&#x00AF;</mo>
+      </munder>
+    </xsl:when>
+    <xsl:otherwise>
+      <munder>
+        <xsl:apply-templates />
+        <mo stretchy='true'>&#x00AF;</mo>
+  	  </munder>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '13']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '1'">
+      <mover>
+        <mover>
+          <xsl:apply-templates />
+          <mo stretchy='true'>&#x00AF;</mo>
+        </mover>
+        <mo stretchy='true'>&#x00AF;</mo>
+      </mover>       
+    </xsl:when>
+    <xsl:otherwise>
+      <mover>
+        <xsl:apply-templates />
+        <mo stretchy='true'>&#x00AF;</mo>
+      </mover>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[matches(@templateType, '^(1[5-9]|2[0-2])$')]">
+  <xsl:apply-templates select="line[1]"/>
+  <munderover>
+    <xsl:apply-templates select="line[4]"/>
+    <xsl:apply-templates select="line[2]"/>
+    <xsl:apply-templates select="line[3]"/>
+  </munderover>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '23']">
+  <munderover>
+    <xsl:apply-templates />
+  </munderover>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '24']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '1'">
+      <mover>
+        <mover>
+          <xsl:apply-templates select="line[1]"/>
+          <mo stretchy='true'>&#65079;</mo>
+        </mover>
+        <xsl:apply-templates select="line[2]"/>
+      </mover>
+    </xsl:when>
+    <xsl:otherwise>
+      <munder>
+        <munder>
+          <xsl:apply-templates select="line[1]"/>
+          <mo stretchy='true'>&#65080;</mo>
+        </munder>
+        <xsl:apply-templates select="line[2]"/>
+      </munder>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '25']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '1'">
+      <mover>
+        <mover>
+          <xsl:apply-templates select="line[1]"/>
+          <mo stretchy='true'>&#9140;</mo>
+        </mover>
+        <xsl:apply-templates select="line[2]"/>
+      </mover>
+    </xsl:when>
+    <xsl:otherwise>
+      <munder>
+        <munder>
+          <xsl:apply-templates select="line[1]"/>
+          <mo stretchy='true'>&#9141;</mo>
+        </munder>
+        <xsl:apply-templates select="line[2]"/>
+      </munder>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '26']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '1'">
+      <mtable>
+        <mtr>
+          <mtd columnalign='right'>
+            <xsl:apply-templates select="*[2]" />
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd columnalign='right'>
+            <menclose notation='longdiv'>
+              <xsl:apply-templates select="*[1]" />
+            </menclose>
+          </mtd>
+        </mtr>
+      </mtable>
+    </xsl:when>
+    <xsl:otherwise>
+      <menclose notation='longdiv'>
+        <xsl:apply-templates />
+      </menclose>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="tmpl[matches(@templateType,'^(2[7-9])$')]">
+  <msubsup>
+  	<mrow />
+    <xsl:apply-templates />
+  </msubsup>
+</xsl:template>
+
+<xsl:template match="tmpl[@templateType = '31']">
+  <xsl:variable name="vari" select="@variation" />
+  <xsl:choose>
+    <xsl:when test="$vari = '7'">
+      <munder>
+        <xsl:apply-templates select="line[1]" />
+        <mo stretchy='true'>
+          <xsl:apply-templates select="char[1]" />
+        </mo>
+      </munder>
+    </xsl:when>
+    <xsl:otherwise>
+      <mover>
+        <xsl:apply-templates select="line[1]" />
+        <mo stretchy='true'>
+          <xsl:apply-templates select="char[1]" />
+        </mo>
+  	  </mover>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:stylesheet>

@@ -189,7 +189,7 @@ public class App{
     		System.exit(1);
      	}
     	String inputPath = cmd.getOptionValue(this.message.getProperty("mathMl.commandLine.input.option"));
-    	String outputPath = this.config.getProperty("mathMl.commandLine.output.defaul");
+    	String outputPath = this.config.getProperty("mathMl.commandLine.output.default");
     	if (cmd.hasOption(this.message.getProperty("mathMl.commandLine.output.option"))){
     		outputPath = cmd.getOptionValue(this.message.getProperty("mathMl.commandLine.output.option"));
   	   	}

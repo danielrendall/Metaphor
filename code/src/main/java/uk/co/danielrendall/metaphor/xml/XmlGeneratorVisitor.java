@@ -210,6 +210,7 @@ public class XmlGeneratorVisitor implements RecordVisitor {
     public void visit(TMPL aTmpl) {
         Element el = new Element("tmpl");
         el.addAttribute(new Attribute("templateType", "" + aTmpl.getTemplate().getType()));
+        el.addAttribute(new Attribute("variation", "" + aTmpl.getVariation()));
         // and other things
         current.push(el);
         for(Record record : aTmpl.getRecords()) {
