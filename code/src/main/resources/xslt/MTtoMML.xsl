@@ -96,45 +96,41 @@
 </xsl:template>
 
 <xsl:template match="tmpl[@templateType = '12']">
-  <xsl:variable name="vari" select="@variation" />
-  <xsl:choose>
-    <xsl:when test="$vari = '1'">
-      <munder>
+  <munder>
+    <xsl:variable name="vari" select="@variation" />
+    <xsl:choose>
+      <xsl:when test="$vari = '1'">
         <munder>
           <xsl:apply-templates />
           <mo stretchy='true'>&#x00AF;</mo>
         </munder>
         <mo stretchy='true'>&#x00AF;</mo>
-      </munder>
-    </xsl:when>
-    <xsl:otherwise>
-      <munder>
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:apply-templates />
         <mo stretchy='true'>&#x00AF;</mo>
-  	  </munder>
-    </xsl:otherwise>
-  </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </munder>
 </xsl:template>
 
 <xsl:template match="tmpl[@templateType = '13']">
-  <xsl:variable name="vari" select="@variation" />
-  <xsl:choose>
-    <xsl:when test="$vari = '1'">
-      <mover>
+  <mover>
+    <xsl:variable name="vari" select="@variation" />
+    <xsl:choose>
+      <xsl:when test="$vari = '1'">
         <mover>
           <xsl:apply-templates />
           <mo stretchy='true'>&#x00AF;</mo>
         </mover>
         <mo stretchy='true'>&#x00AF;</mo>
-      </mover>       
-    </xsl:when>
-    <xsl:otherwise>
-      <mover>
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:apply-templates />
         <mo stretchy='true'>&#x00AF;</mo>
-      </mover>
-    </xsl:otherwise>
-  </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </mover>
 </xsl:template>
 
 <xsl:template match="tmpl[matches(@templateType, '^(1[5-9]|2[0-2])$')]">

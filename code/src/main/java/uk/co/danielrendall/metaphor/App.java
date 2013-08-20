@@ -20,12 +20,12 @@ import uk.co.danielrendall.metaphor.records.MTEF;
 import uk.co.danielrendall.metaphor.xml.XmlGeneratorVisitor;
 
 import java.io.ByteArrayInputStream;
+import java.io.CharArrayReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -150,25 +150,32 @@ public class App{
     
     public void doWithFile(File inFile, File outPath, boolean generateOutPath)throws ParseException, IOException, TransformerException, URISyntaxException{
     	log.debug(String.format(this.message.getProperty("mathMl.conversion.current.file"), inFile.getPath()));
-    	File xmlOutPath = new File(outPath.getParentFile(), ((outPath.getName().contains("."))? outPath.getName().substring(0, outPath.getName().lastIndexOf(".")) : outPath.getName()) + ".xml");
     	File mmlOutPath = new File(outPath.getParentFile(), ((outPath.getName().contains("."))? outPath.getName().substring(0, outPath.getName().lastIndexOf(".")) : outPath.getName()) + ".mml");
     	if(generateOutPath){
     		if(!outPath.exists()){
     			outPath.mkdirs();
     		}
-    		xmlOutPath = new File(outPath, ((inFile.getName().contains("."))? inFile.getName().substring(0, inFile.getName().lastIndexOf(".")) : inFile.getName()) + ".xml");
     		mmlOutPath = new File(outPath, ((inFile.getName().contains("."))? inFile.getName().substring(0, inFile.getName().lastIndexOf(".")) : inFile.getName()) + ".mml");
     	}
-        InputStream is = new FileInputStream(inFile);
-        MTEF mtef = this.parse(is);
+    	String mtefXMLContent = convertMTEF_BIN2MTEF_XML(Files.toByteArray(inFile));
+    	String mmlContent = convertMTEF_XML2MML(mtefXMLContent);
+    	Files.write(mmlContent, mmlOutPath, Charset.forName("UTF-8"));
+    }
+    
+    public String convertMTEF_BIN2MTEF_XML(byte[] inputContent) throws ParseException, IOException{
+    	MTEF mtef = this.parse(new ByteArrayInputStream(inputContent));
         XmlGeneratorVisitor visitor = new XmlGeneratorVisitor();
         mtef.accept(visitor);
         Element root = visitor.getRoot();
-        log.debug(root.toXML());
-        Files.write(root.toXML(), xmlOutPath, Charset.forName("UTF-8"));
-        TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
-        Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(new File(App.class.getResource(this.config.getProperty("mathMl.conversion.xslt.path")).toURI())));
-        transformer.transform(new javax.xml.transform.stream.StreamSource(xmlOutPath), new javax.xml.transform.stream.StreamResult( new FileOutputStream(mmlOutPath)));
+        return root.toXML();
+    }
+    
+    public String convertMTEF_XML2MML(String inputContent) throws URISyntaxException, TransformerException{
+    	TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
+        Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(App.class.getResourceAsStream(this.config.getProperty("mathMl.conversion.xslt.path"))));
+        StringWriter result = new StringWriter();
+        transformer.transform(new javax.xml.transform.stream.StreamSource(new CharArrayReader(inputContent.toCharArray())), new javax.xml.transform.stream.StreamResult(result));
+        return result.toString();
     }
     
     private void doWithArgs(String[] args) throws ParseException, IOException, TransformerException, URISyntaxException{
