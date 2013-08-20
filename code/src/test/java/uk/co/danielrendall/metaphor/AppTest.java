@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 /**
@@ -31,7 +32,7 @@ import javax.xml.transform.TransformerException;
 public class AppTest {
     private App obj = null;
     
-    public AppTest() throws IOException{
+    public AppTest() throws IOException, TransformerConfigurationException{
     	this.obj = new App();
     }
 

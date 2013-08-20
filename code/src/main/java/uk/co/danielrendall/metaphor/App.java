@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 
@@ -58,10 +59,13 @@ public class App{
 	private static final Logger log = LoggerFactory.getLogger(App.class);
 	private Properties config = new Properties();
 	private Properties message = new Properties();
+	private Transformer transformer = null;
 	
-	public App() throws IOException{
+	public App() throws IOException, TransformerConfigurationException{
 		this.config.load(App.class.getResourceAsStream("/config.properties"));
 		this.message.load(App.class.getResourceAsStream(this.config.getProperty("mathMl.conversion.message.path")));
+		TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
+		this.transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(App.class.getResourceAsStream(this.config.getProperty("mathMl.conversion.xslt.path"))));
 	}
 	
     public MTEF parse(InputStream is) throws ParseException, IOException {
@@ -171,10 +175,8 @@ public class App{
     }
     
     public String convertMTEF_XML2MML(String inputContent) throws URISyntaxException, TransformerException{
-    	TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
-        Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(App.class.getResourceAsStream(this.config.getProperty("mathMl.conversion.xslt.path"))));
         StringWriter result = new StringWriter();
-        transformer.transform(new javax.xml.transform.stream.StreamSource(new CharArrayReader(inputContent.toCharArray())), new javax.xml.transform.stream.StreamResult(result));
+        this.transformer.transform(new javax.xml.transform.stream.StreamSource(new CharArrayReader(inputContent.toCharArray())), new javax.xml.transform.stream.StreamResult(result));
         return result.toString();
     }
     
