@@ -17,9 +17,12 @@ package uk.co.danielrendall.metaphor;
 
 import org.junit.Test;
 
+import com.google.common.io.Files;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -30,19 +33,29 @@ import javax.xml.transform.TransformerException;
  * @author Murugan Natarajan
  */
 public class AppTest {
-    private App obj = null;
+	private FilesExplorer explorer = new FilesExplorer();
+	private BinFileHandler bin = new BinFileHandler();
+	private MMLConverter converter = null;
     
-    public AppTest() throws IOException, TransformerConfigurationException{
-    	this.obj = new App();
+    public AppTest() throws TransformerConfigurationException, IOException {
+    	this.converter = new MMLConverter();
+    	this.explorer.setOutputExtention(".mml");
+    	this.explorer.setSearchPattern("^([^.]*)\\.bin$");
     }
 
     @Test
     public void testParsesWord2000() throws ParseException, IOException, URISyntaxException, TransformerException {
-    	obj.doWithFolder(new File(AppTest.class.getResource("/ole/word2000/").toURI()), new File("output/word2000/"), true);
+    	explorer.collectFilePairs(new File(AppTest.class.getResource("/ole/word2000/").toURI()), new File("output/word2000/"));
+		for (Map.Entry<File, File> pair : explorer.getFilePairs().entrySet()){
+			Files.write(converter.covertBin(bin.parseRequiredContent(Files.toByteArray(pair.getKey()))), pair.getValue());
+		}
     }
     
     @Test
     public void testParsesWord2010() throws ParseException, IOException, URISyntaxException, TransformerException {
-    	obj.doWithFolder(new File(AppTest.class.getResource("/ole/word2010/").toURI()), new File("output/word2010/"), true);
+    	explorer.collectFilePairs(new File(AppTest.class.getResource("/ole/word2010/").toURI()), new File("output/word2010/"));
+		for (Map.Entry<File, File> pair : explorer.getFilePairs().entrySet()){
+			Files.write(converter.covertBin(bin.parseRequiredContent(Files.toByteArray(pair.getKey()))), pair.getValue());
+		}
     }
 }
