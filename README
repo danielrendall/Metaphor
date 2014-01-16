@@ -1,16 +1,1 @@
-This is a library to parse MathType's MTEF binary format. Currently doesn't do very much at all.
-
-My intention is that it should read the MTEF stream and, as a bare minimum, output an XML serialisation of it with each
-MathType record mapping fairly directly to an XML element containing subrecords as subelements, and with record options
-represented by attributes. As an extension, it could make the XML a bit nicer (e.g. instead of outputting a TMPL element
-for the TMPL record, it could output a specific element based on the template selector).
-
-Ultimately, I'd like to be able to convert a binary MTEF stream into presentational MathML. My thinking is that once
-the binary MTEF is available in some kind of XML representation, it turns into a question of XSLT which personally I
-find more tractable (and it can be tested with XSpec tests).
-
-At the moment, this is my main project for working on in my spare time and on the train to / from where I work.
-Unfortunately, I don't have a lot of spare time currently! All contributions and suggestions are welcome, but
-my ability to respond is a bit limited at the moment.
-
-My intention is to put this under the Apache License, version 2.0, unless anyone has any serious objections.
+Moving forward the work done by Daniel Rendall towards the MathML target ...
