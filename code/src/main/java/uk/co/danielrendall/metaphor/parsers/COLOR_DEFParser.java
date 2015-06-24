@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * @author Daniel Rendall
+ * @author Javier Fernandez
  */
 public class COLOR_DEFParser extends Parser<COLOR_DEF> {
 
@@ -37,7 +38,7 @@ public class COLOR_DEFParser extends Parser<COLOR_DEF> {
         int listSize = options.color_cmyk() ? 4 : 3;
         List<Integer> colorValues = Lists.newArrayListWithCapacity(listSize);
         for (int i=0; i<listSize; i++) {
-            colorValues.set(i, readSimple16BitInteger(in));
+            colorValues.add(i, readSimple16BitInteger(in));
         }
         String name = options.color_name() ? readNullTerminatedString(in) : "";
         return new COLOR_DEF(options, colorValues, name);
