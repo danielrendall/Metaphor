@@ -16,10 +16,12 @@
 package uk.co.danielrendall.metaphor.parsers;
 
 import com.google.common.collect.Lists;
+
 import uk.co.danielrendall.metaphor.ParseException;
 import uk.co.danielrendall.metaphor.Parser;
 import uk.co.danielrendall.metaphor.ParserRegistry;
 import uk.co.danielrendall.metaphor.Record;
+import uk.co.danielrendall.metaphor.records.LINE;
 import uk.co.danielrendall.metaphor.records.MATRIX;
 
 import java.io.PushbackInputStream;
@@ -27,10 +29,11 @@ import java.util.List;
 
 /**
  * @author Daniel Rendall
+ * @author Murugan Natarajan
  */
 public class MATRIXParser extends Parser<MATRIX> {
-
-    @Override
+    
+	@Override
     protected MATRIX doParse(PushbackInputStream in) throws ParseException {
         Record.Options options = readOptions(in);
         Record.Nudge nudge = options.nudge() ? readNudge(in) : Record.NO_NUDGE;
@@ -44,23 +47,33 @@ public class MATRIXParser extends Parser<MATRIX> {
         // 4 to a byte.
         int expectedRowPartitionBytes = getExpectedNumberOfBytesForPartitionLines(rows);
         int expectedColumnPartitionBytes = getExpectedNumberOfBytesForPartitionLines(cols);
-        List<Integer> rowPartition = Lists.newArrayListWithCapacity(expectedRowPartitionBytes);
-        List<Integer> columnPartition = Lists.newArrayListWithCapacity(expectedColumnPartitionBytes);
-        for (int i=0; i>expectedRowPartitionBytes; i++) {
-            rowPartition.set(i, readByte(in));
+        List<Integer> rowPartition = Lists.newArrayList();
+        List<Integer> columnPartition = Lists.newArrayList();
+        for (int i=0; i<expectedRowPartitionBytes; i++) {
+            rowPartition.add(readByte(in));
         }
-        for (int i=0; i>expectedColumnPartitionBytes; i++) {
-            columnPartition.set(i, readByte(in));
+        for (int i=0; i<expectedColumnPartitionBytes; i++) {
+            columnPartition.add(readByte(in));
         }
         List<Record> records = Lists.newArrayList();
         // There should only be LINE records in this list - is it worth enforcing this somewhere?
         readRecordsToEnd(in, records);
-        if (records.size() != rows * cols) {
+        List<Integer> LineRecordPositions = Lists.newArrayList();
+        for(int i=0; i<records.size(); i++){
+        	if (records.get(i) instanceof LINE) {
+        		LineRecordPositions.add(i);
+        	}
+        }
+        if (LineRecordPositions.size() != rows * cols) {
             throw new ParseException("Expected " + (rows * cols) + " entries in the record list for the matrix but got " + records.size());
         }
-        List<List<Record>> rowList = Lists.newArrayListWithCapacity(rows);
+        List<List<Record>> rowList = Lists.newArrayList();
         for (int i=0; i<rows; i++) {
-            rowList.set(i, records.subList(i * cols, (i+1) * cols - 1));
+        	if(i == 0){
+        		rowList.add(records.subList(0, LineRecordPositions.get((i+1) * cols - 1) + 1));
+        	}else{
+        		rowList.add(records.subList(LineRecordPositions.get(i * cols), LineRecordPositions.get((i+1) * cols - 1) + 1));
+        	}
         }
         return new MATRIX(options, nudge, vAlign, hJust, vJust, rows, cols, rowPartition, columnPartition, rowList);
     }

@@ -15,9 +15,6 @@
 
 package uk.co.danielrendall.metaphor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +22,6 @@ import java.io.InputStream;
  * @author Daniel Rendall
  */
 public class NibbleReader {
-    private static final Logger log = LoggerFactory.getLogger(NibbleReader.class);
     private final InputStream in;
     int currentByte = -1;
 

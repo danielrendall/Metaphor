@@ -15,14 +15,10 @@
 
 package uk.co.danielrendall.metaphor.records;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import uk.co.danielrendall.metaphor.Record;
 import uk.co.danielrendall.metaphor.RecordVisitor;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 
 /**

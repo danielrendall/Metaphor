@@ -17,7 +17,6 @@ package uk.co.danielrendall.metaphor.parsers;
 
 import com.google.common.collect.Lists;
 import uk.co.danielrendall.metaphor.*;
-import uk.co.danielrendall.metaphor.records.END;
 import uk.co.danielrendall.metaphor.records.LINE;
 import uk.co.danielrendall.metaphor.records.RULER;
 

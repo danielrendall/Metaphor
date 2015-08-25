@@ -15,49 +15,47 @@
 
 package uk.co.danielrendall.metaphor;
 
-import com.google.common.io.Files;
-
-import nu.xom.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.co.danielrendall.metaphor.records.MTEF;
 import org.junit.Test;
-import uk.co.danielrendall.metaphor.xml.XmlGeneratorVisitor;
+
+import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.net.URISyntaxException;
+import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  * Unit test for simple App.
+ * @author Daniel Rendall
+ * @author Murugan Natarajan
  */
 public class AppTest {
-    private static final Logger log = LoggerFactory.getLogger(AppTest.class);
+	private FilesExplorer explorer = new FilesExplorer();
+	private BinFileHandler bin = new BinFileHandler();
+	private MMLConverter converter = null;
+    
+    public AppTest() throws TransformerConfigurationException, IOException {
+    	this.converter = new MMLConverter();
+    	this.explorer.setOutputExtention(".mml");
+    	this.explorer.setSearchPattern("^([^.]*)\\.bin$");
+    }
 
     @Test
-    public void testParseQuadratic() throws ParseException, IOException {
-        InputStream is = AppTest.class.getResourceAsStream("/ole/quadratic.bin");
-        MTEF mtef = App.parse(is);
-        assertEquals("Windows", mtef.getGeneratingPlatform());
-        XmlGeneratorVisitor visitor = new XmlGeneratorVisitor();
-        mtef.accept(visitor);
-        Element root = visitor.getRoot();
-        log.debug(root.toXML());
-        Files.write(root.toXML(), new File("output.xml"), Charset.forName("UTF-8"));
-
+    public void testParsesWord2000() throws ParseException, IOException, URISyntaxException, TransformerException {
+    	explorer.collectFilePairs(new File(AppTest.class.getResource("/ole/word2000/").toURI()), new File("output/word2000/"));
+		for (Map.Entry<File, File> pair : explorer.getFilePairs().entrySet()){
+			Files.write(converter.covertBin(bin.parseRequiredContent(Files.toByteArray(pair.getKey()))), pair.getValue());
+		}
     }
     
     @Test
-    public void testParseFraction() throws ParseException, IOException {
-        InputStream is = AppTest.class.getResourceAsStream("/ole/fraction.bin");
-        MTEF mtef = App.parse(is);
-        assertEquals("Windows", mtef.getGeneratingPlatform());
-        XmlGeneratorVisitor visitor = new XmlGeneratorVisitor();
-        mtef.accept(visitor);
-        Element root = visitor.getRoot();
-        log.debug(root.toXML());
+    public void testParsesWord2010() throws ParseException, IOException, URISyntaxException, TransformerException {
+    	explorer.collectFilePairs(new File(AppTest.class.getResource("/ole/word2010/").toURI()), new File("output/word2010/"));
+		for (Map.Entry<File, File> pair : explorer.getFilePairs().entrySet()){
+			Files.write(converter.covertBin(bin.parseRequiredContent(Files.toByteArray(pair.getKey()))), pair.getValue());
+		}
     }
 }

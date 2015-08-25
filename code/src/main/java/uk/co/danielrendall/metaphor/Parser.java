@@ -143,7 +143,7 @@ public abstract class Parser<T extends Record> {
     protected void readRecordsToEnd(PushbackInputStream in, List<Record> records) throws ParseException {
         while (true) {
             int type = nextType(in);
-            Parser next = ParserRegistry.get(type);
+            Parser<?> next = ParserRegistry.get(type);
             Record record = next.parse(in);
             if (record instanceof END) {
                 break;
